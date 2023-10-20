@@ -1,0 +1,23 @@
+{
+  "name": "agendify",
+  "version": "1.0.0",
+  "description": "API to store agendify",
+  "main": "src/index.js",
+  "repository": "https://github.com/leomiranda1995/agendify.git",
+  "author": "Leonardo da Silva Miranda <leonardo.miranda@linx.com.br>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.3",
+    "express-async-errors": "^3.1.1",
+    "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.11.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "nodemon": "^2.0.15"
+  }
+}
