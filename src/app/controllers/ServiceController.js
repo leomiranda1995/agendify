@@ -1,5 +1,5 @@
 const ServicesRepository = require('../repositories/ServicesRepository');
-const ProfessionalRepository = require('../repositories/ProfessionalRepository');
+const UserModule = require('../module/UserModule');
 
 class ServiceController {
   async index(request, response) {
@@ -28,10 +28,14 @@ class ServiceController {
       special_requirements, optional, photo1, photo2, photo3, user_id,
     } = request.body;
 
-    const professional = await ProfessionalRepository.findByUserId(user_id);
+    const user = await UserModule.listUser(user_id);
 
-    if (!professional) {
-      return response.status(400).json({ error: 'user is required' });
+    if (user.error) {
+      return response.status(400).json(user.error);
+    }
+
+    if (!user.professional) {
+      return response.status(400).json({ error: 'User is not professional' });
     }
 
     if (!name) {
@@ -49,7 +53,7 @@ class ServiceController {
       photo1,
       photo2,
       photo3,
-      professional_id: professional.id,
+      user_id,
     });
 
     response.json(service);

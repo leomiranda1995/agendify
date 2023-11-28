@@ -3,12 +3,12 @@ const db = require('../../database');
 class ServicesRepository {
   async findAll(orderBy = 'ASC', userId = '') {
     const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
-    const whereUserId = (userId !== '' ? `where p.user_id = '${userId}'` : '');
+    const whereUserId = (userId !== '' ? `where u.id = '${userId}'` : '');
 
     const rows = await db.query(`
       SELECT s.*
         FROM services s
-       INNER JOIN professionals p ON (p.id = s.professional_id)
+       INNER JOIN users u ON (u.id = s.user_id)
         ${whereUserId}
        ORDER BY s.name ${direction}
     `);
@@ -26,17 +26,17 @@ class ServicesRepository {
 
   async create({
     name, description, price, duration, availability,
-    special_requirements, optional, photo1, photo2, photo3, professional_id,
+    special_requirements, optional, photo1, photo2, photo3, user_id,
   }) {
     const [row] = await db.query(`
       INSERT INTO services
         (name, description, price, duration, availability,
-         special_requirements, optional, photo1, photo2, photo3, professional_id)
+         special_requirements, optional, photo1, photo2, photo3, user_id)
       VALUES
         ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         RETURNING *
     `, [name, description, price, duration, availability,
-      special_requirements, optional, photo1, photo2, photo3, professional_id]);
+      special_requirements, optional, photo1, photo2, photo3, user_id]);
 
     return row;
   }

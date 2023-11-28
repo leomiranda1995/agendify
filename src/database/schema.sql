@@ -34,6 +34,6 @@ CREATE TABLE IF NOT EXISTS services(
   photo1 VARCHAR,
   photo2 VARCHAR,
   photo3 VARCHAR,
-  professional_id UUID,
-  FOREIGN KEY(professional_id) REFERENCES professionals(id)
+  user_id UUID,
+  FOREIGN KEY(user_id) REFERENCES users(id)
 );
