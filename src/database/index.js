@@ -5,7 +5,7 @@ const client = new Client({
   port: 5432,
   user: 'root',
   password: 'root',
-  database: 'agendaai',
+  database: 'agendify',
 });
 
 client.connect();

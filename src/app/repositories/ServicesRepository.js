@@ -1,14 +1,16 @@
 const db = require('../../database');
 
 class ServicesRepository {
-  async findAll(orderBy = 'ASC') {
+  async findAll(orderBy = 'ASC', userId = '') {
     const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+    const whereUserId = (userId !== '' ? `where p.user_id = '${userId}'` : '');
 
     const rows = await db.query(`
-      SELECT services.*
-        FROM services
-       INNER JOIN professionals ON (professionals.id = services.professional_id)
-       ORDER BY services.name ${direction}
+      SELECT s.*
+        FROM services s
+       INNER JOIN professionals p ON (p.id = s.professional_id)
+        ${whereUserId}
+       ORDER BY s.name ${direction}
     `);
     return rows;
   }
@@ -22,36 +24,26 @@ class ServicesRepository {
     return row;
   }
 
-  async findByIdProfessional(id) {
-    const rows = await db.query(`
-    SELECT s.*
-      FROM services s
-     INNER JOIN professionals p on (s.professional_id = p.id)
-     WHERE s.professional_id = $1
-    `, [id]);
-    return rows;
-  }
-
   async create({
     name, description, price, duration, availability,
-    special_requirements, optional, professional_id,
+    special_requirements, optional, photo1, photo2, photo3, professional_id,
   }) {
     const [row] = await db.query(`
       INSERT INTO services
         (name, description, price, duration, availability,
-         special_requirements, optional, professional_id)
+         special_requirements, optional, photo1, photo2, photo3, professional_id)
       VALUES
-        ($1, $2, $3, $4, $5, $6, $7, $8)
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         RETURNING *
     `, [name, description, price, duration, availability,
-      special_requirements, optional, professional_id]);
+      special_requirements, optional, photo1, photo2, photo3, professional_id]);
 
     return row;
   }
 
   async update(id, {
     name, description, price, duration, availability,
-    special_requirements, optional, professional_id,
+    special_requirements, optional, photo1, photo2, photo3,
   }) {
     const [row] = await db.query(`
       UPDATE services
@@ -62,11 +54,13 @@ class ServicesRepository {
              availability = $5,
              special_requirements = $6,
              optional = $7,
-             professional_id = $8
-       WHERE id = $9
+             photo1 = $8,
+             photo2 = $9,
+             photo3 = $10
+       WHERE id = $11
        RETURNING *
     `, [name, description, price, duration, availability,
-      special_requirements, optional, professional_id, id]);
+      special_requirements, optional, photo1, photo2, photo3, id]);
 
     return row;
   }

@@ -1,10 +1,11 @@
 const ServicesRepository = require('../repositories/ServicesRepository');
+const ProfessionalRepository = require('../repositories/ProfessionalRepository');
 
 class ServiceController {
   async index(request, response) {
-    const { orderBy } = request.query;
+    const { orderBy, userId } = request.query;
 
-    const services = await ServicesRepository.findAll(orderBy);
+    const services = await ServicesRepository.findAll(orderBy, userId);
 
     response.json(services);
   }
@@ -21,19 +22,17 @@ class ServiceController {
     response.json(service);
   }
 
-  async showByProfessional(request, response) {
-    const { id } = request.params;
-
-    const services = await ServicesRepository.findByIdProfessional(id);
-
-    response.json(services);
-  }
-
   async store(request, response) {
     const {
       name, description, price, duration, availability,
-      special_requirements, optional, professional_id,
+      special_requirements, optional, photo1, photo2, photo3, user_id,
     } = request.body;
+
+    const professional = await ProfessionalRepository.findByUserId(user_id);
+
+    if (!professional) {
+      return response.status(400).json({ error: 'user is required' });
+    }
 
     if (!name) {
       return response.status(400).json({ error: 'Name is required' });
@@ -47,7 +46,10 @@ class ServiceController {
       availability,
       special_requirements,
       optional,
-      professional_id,
+      photo1,
+      photo2,
+      photo3,
+      professional_id: professional.id,
     });
 
     response.json(service);
@@ -57,7 +59,7 @@ class ServiceController {
     const { id } = request.params;
     const {
       name, description, price, duration, availability,
-      special_requirements, optional, professional_id,
+      special_requirements, optional, photo1, photo2, photo3,
     } = request.body;
 
     const serviceExists = await ServicesRepository.findById(id);
@@ -77,7 +79,9 @@ class ServiceController {
       availability,
       special_requirements,
       optional,
-      professional_id,
+      photo1,
+      photo2,
+      photo3,
     });
 
     response.json(service);
