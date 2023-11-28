@@ -1,101 +1,99 @@
 const ServicesRepository = require('../repositories/ServicesRepository');
-const UserModule = require('../module/UserModule');
+const ServicesModule = require('../module/ServiceModule');
+const ServiceModule = require('../module/ServiceModule');
 
 class ServiceController {
   async index(request, response) {
-    const { orderBy, userId } = request.query;
+    try {
+      const { orderBy, userId } = request.query;
 
-    const services = await ServicesRepository.findAll(orderBy, userId);
+      const services = await ServicesModule.listServices(orderBy, userId);
 
-    response.json(services);
+      response.json(services);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
+    }
   }
 
   async show(request, response) {
-    const { id } = request.params;
+    try {
+      const { id } = request.params;
 
-    const service = await ServicesRepository.findById(id);
+      const service = await ServicesRepository.findById(id);
 
-    if (!service) {
-      return response.status(404).json({ error: 'Service not found' });
+      if (!service) {
+        return response.status(404).json({ error: 'Service not found' });
+      }
+
+      response.json(service);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
     }
-
-    response.json(service);
   }
 
   async store(request, response) {
-    const {
-      name, description, price, duration, availability,
-      special_requirements, optional, photo1, photo2, photo3, user_id,
-    } = request.body;
+    try {
+      const {
+        name, description, price, duration, availability,
+        special_requirements, optional, photo1, photo2, photo3, user_id,
+      } = request.body;
 
-    const user = await UserModule.listUser(user_id);
+      const service = ServiceModule.createService(
+        name,
+        description,
+        price,
+        duration,
+        availability,
+        special_requirements,
+        optional,
+        photo1,
+        photo2,
+        photo3,
+        user_id,
+      );
 
-    if (user.error) {
-      return response.status(400).json(user.error);
+      response.json(service);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
     }
-
-    if (!user.professional) {
-      return response.status(400).json({ error: 'User is not professional' });
-    }
-
-    if (!name) {
-      return response.status(400).json({ error: 'Name is required' });
-    }
-
-    const service = await ServicesRepository.create({
-      name,
-      description,
-      price,
-      duration,
-      availability,
-      special_requirements,
-      optional,
-      photo1,
-      photo2,
-      photo3,
-      user_id,
-    });
-
-    response.json(service);
   }
 
   async update(request, response) {
-    const { id } = request.params;
-    const {
-      name, description, price, duration, availability,
-      special_requirements, optional, photo1, photo2, photo3,
-    } = request.body;
+    try {
+      const { id } = request.params;
+      const {
+        name, description, price, duration, availability,
+        special_requirements, optional, photo1, photo2, photo3,
+      } = request.body;
 
-    const serviceExists = await ServicesRepository.findById(id);
-    if (!serviceExists) {
-      return response.status(404).json({ error: 'Service not found' });
+      const service = ServiceModule.updateService(id, {
+        name,
+        description,
+        price,
+        duration,
+        availability,
+        special_requirements,
+        optional,
+        photo1,
+        photo2,
+        photo3,
+      });
+
+      response.json(service);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
     }
-
-    if (!name) {
-      return response.status(400).json({ error: 'Name is required' });
-    }
-
-    const service = await ServicesRepository.update(id, {
-      name,
-      description,
-      price,
-      duration,
-      availability,
-      special_requirements,
-      optional,
-      photo1,
-      photo2,
-      photo3,
-    });
-
-    response.json(service);
   }
 
   async delete(request, response) {
-    const { id } = request.params;
+    try {
+      const { id } = request.params;
 
-    await ServicesRepository.delete(id);
-    response.sendStatus(204);
+      await ServiceModule.deleteService(id);
+      response.sendStatus(204);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const UserController = require('./app/controllers/UserController');
 const ServiceController = require('./app/controllers/ServiceController');
+const EventController = require('./app/controllers/EventController');
 
 const router = Router();
 
@@ -15,5 +16,8 @@ router.get('/services/:id', ServiceController.show);
 router.post('/services', ServiceController.store);
 router.put('/services/:id', ServiceController.update);
 router.delete('/services/:id', ServiceController.delete);
+
+router.post('/events', EventController.index);
+router.get('/events/:eventId', EventController.show);
 
 module.exports = router;

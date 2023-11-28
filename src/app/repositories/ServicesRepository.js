@@ -24,7 +24,7 @@ class ServicesRepository {
     return row;
   }
 
-  async create({
+  async createService({
     name, description, price, duration, availability,
     special_requirements, optional, photo1, photo2, photo3, user_id,
   }) {

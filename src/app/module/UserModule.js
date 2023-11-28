@@ -1,5 +1,6 @@
 const UserRepository = require('../repositories/UserRepository');
 const ProfessionalRepository = require('../repositories/ProfessionalRepository');
+const AgendifyError = require('../../exceptions/AgendifyException');
 
 class UserModule {
   async listUsers(orderBy = 'ASC', userTypeFilter = '') {
@@ -16,11 +17,11 @@ class UserModule {
     return usersWithProfessional;
   }
 
-  async listUser(userId) {
+  async listUser(response, userId) {
     const user = await UserRepository.findById(userId);
 
     if (!user) {
-      return { error: 'User not found' };
+      throw new AgendifyError('User not found', 404);
     }
 
     const professional = await ProfessionalRepository.findByUserId(user.id);
@@ -29,15 +30,16 @@ class UserModule {
     return user;
   }
 
-  async createUser(name, email, password, phone, type_user, professional) {
+  async createUser(response, {
+    name, email, password, phone, type_user, professional,
+  }) {
     if (!name) {
-      return { error: 'Name is required' };
+      throw new AgendifyError('Name is required!', 404);
     }
 
     const userExists = await UserRepository.findByEmail(email);
-
     if (userExists) {
-      return { error: 'This e-mail is already in use' };
+      throw new AgendifyError('This e-mail is already in use', 404);
     }
 
     const user = await UserRepository.create({
@@ -52,23 +54,23 @@ class UserModule {
     return user;
   }
 
-  async updateUser(id, {
+  async updateUser(response, id, {
     name, password, phone, type_user, professional,
   }) {
     const userExists = await UserRepository.findById(id);
     if (!userExists) {
-      return { error: 'User not found' };
+      throw new AgendifyError('User not found', 404);
     }
 
     if (!name) {
-      return { error: 'Name is required' };
+      throw new AgendifyError('Name is required', 404);
     }
 
     if (userExists.type_user === 'P') {
       const professionalExists = await ProfessionalRepository.findByUserId(id);
 
       if (!professionalExists) {
-        return { error: 'User not found' };
+        throw new AgendifyError('User not found', 404);
       }
     }
 

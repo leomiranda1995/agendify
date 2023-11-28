@@ -2,69 +2,77 @@ const UserModule = require('../module/UserModule');
 
 class UserController {
   async index(request, response) {
-    const { orderBy, userTypeFilter } = request.query;
+    try {
+      const { orderBy, userTypeFilter } = request.query;
 
-    const usersWithProfessional = await UserModule.listUsers(orderBy, userTypeFilter);
+      const usersWithProfessional = await UserModule.listUsers(orderBy, userTypeFilter);
 
-    response.json(usersWithProfessional);
+      response.json(usersWithProfessional);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
+    }
   }
 
   async show(request, response) {
-    const { user_id } = request.params;
+    try {
+      const { user_id } = request.params;
 
-    const retorno = await UserModule.listUser(user_id);
+      const user = await UserModule.listUser(response, user_id);
 
-    if (retorno.error) {
-      return response.status(404).json(retorno.error);
+      response.json(user);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
     }
-
-    response.json(retorno);
   }
 
   async store(request, response) {
-    const {
-      name, email, password, phone, type_user, professional,
-    } = request.body;
+    try {
+      const {
+        name, email, password, phone, type_user, professional,
+      } = request.body;
 
-    const retorno = await UserModule.createUser(
-      name,
-      email,
-      password,
-      phone,
-      type_user,
-      professional,
-    );
+      const user = await UserModule.createUser(response, {
+        name,
+        email,
+        password,
+        phone,
+        type_user,
+        professional,
+      });
 
-    if (retorno.error) {
-      return response.status(400).json(retorno.error);
+      response.json(user);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
     }
-
-    response.json(retorno);
   }
 
   async update(request, response) {
-    const { id } = request.params;
-    const {
-      name, password, phone, type_user, professional,
-    } = request.body;
+    try {
+      const { id } = request.params;
+      const {
+        name, password, phone, type_user, professional,
+      } = request.body;
 
-    const retorno = await UserModule.updateUser(id, {
-      name, password, phone, type_user, professional,
-    });
+      const userUpdated = await UserModule.updateUser(response, id, {
+        name, password, phone, type_user, professional,
+      });
 
-    if (retorno.error) {
-      return response.status(404).json(retorno.error);
+      response.json(userUpdated);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
     }
-
-    response.json(retorno);
   }
 
   async delete(request, response) {
-    const { id } = request.params;
+    try {
+      const { id } = request.params;
 
-    await UserModule.deleteUser(id);
+      await UserModule.deleteUser(id);
 
-    response.sendStatus(204);
+      response.sendStatus(204);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
+    }
   }
 }
 
