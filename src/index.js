@@ -1,7 +1,9 @@
 const express = require('express');
 require('express-async-errors');
 
-const routes = require('./routes');
+const routesUser = require('./routes/routesUser');
+const routesService = require('./routes/routesService');
+const routesEvent = require('./routes/routesEvent');
 
 const app = express();
 
@@ -11,7 +13,11 @@ const app = express();
 //   next();
 // });
 app.use(express.json());
-app.use(routes);
+
+app.use(routesUser);
+app.use(routesService);
+app.use(routesEvent);
+
 app.use((error, request, response, next) => {
   console.log('##### Error Handler');
   console.log(error);
