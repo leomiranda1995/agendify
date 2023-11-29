@@ -7,7 +7,7 @@ class EventController {
         userProfessionalId, date,
       } = request.body;
 
-      const events = await EventModule.listEventsByDate(response, userProfessionalId, date);
+      const events = await EventModule.listEventsByDate(userProfessionalId, date);
       response.json(events);
     } catch (e) {
       response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
@@ -15,55 +15,88 @@ class EventController {
   }
 
   async show(request, response) {
-    const { eventId } = request.params;
+    try {
+      const { eventId } = request.params;
 
-    const event = await EventModule.listEvent(response, eventId);
+      const event = await EventModule.listEvent(eventId);
 
-    response.json(event);
+      response.json(event);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
+    }
   }
 
   async store(request, response) {
-    const {
-      name, email, password, phone, type_user, professional,
-    } = request.body;
+    try {
+      const {
+        userIdProfessional,
+        userIdClient,
+        dateEvent,
+        startTime,
+        endTime,
+        status,
+        updated,
+        summary,
+        description,
+        color,
+      } = request.body;
 
-    const retorno = await EventModule.createUser(
-      name,
-      email,
-      password,
-      phone,
-      type_user,
-      professional,
-    );
+      const event = await EventModule.createEvent(
+        userIdProfessional,
+        userIdClient,
+        dateEvent,
+        startTime,
+        endTime,
+        status,
+        updated,
+        summary,
+        description,
+        color,
+      );
 
-    if (retorno.error) {
-      return response.status(400).json(retorno.error);
+      response.json(event);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
     }
-
-    response.json(retorno);
   }
 
   async update(request, response) {
-    const { id } = request.params;
-    const {
-      name, password, phone, type_user, professional,
-    } = request.body;
+    try {
+      const { id } = request.params;
+      const {
+        // userIdProfessional,
+        // userIdClient,
+        dateEvent,
+        startTime,
+        endTime,
+        status,
+        summary,
+        description,
+        color,
+      } = request.body;
 
-    const retorno = await EventModule.updateUser(id, {
-      name, password, phone, type_user, professional,
-    });
+      const eventUpdated = await EventModule.updateEvent(id, {
+        // userIdProfessional,
+        // userIdClient,
+        dateEvent,
+        startTime,
+        endTime,
+        status,
+        summary,
+        description,
+        color,
+      });
 
-    if (retorno.error) {
-      return response.status(404).json(retorno.error);
+      response.json(eventUpdated);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
     }
-
-    response.json(retorno);
   }
 
   async delete(request, response) {
     const { id } = request.params;
 
-    await EventModule.deleteUser(id);
+    await EventModule.deleteEvent(id);
 
     response.sendStatus(204);
   }

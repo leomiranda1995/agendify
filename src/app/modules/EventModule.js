@@ -1,89 +1,137 @@
-// const AgendifyError = require('../exceptions/AgendifyException');
+const AgendifyError = require('../exceptions/AgendifyException');
 const EventRepository = require('../repositories/EventRepository');
-const ProfessionalRepository = require('../repositories/ProfessionalRepository');
 const UserModule = require('./UserModule');
 
 class EventModule {
-  async listEventsByDate(response, userIdProfessional, date) {
-    const user = await UserModule.listUser(response, userIdProfessional);
+  async listEventsByDate(userIdProfessional, date/* , agendaDisponivel */) {
+    // TODO: retornar além dos agendados os horários livres seria bom
+    // TODO: assim como ter uma opção de filtro
+    // TODO: somente agendados, somente horáriosl livres
+    if (!userIdProfessional) {
+      throw new AgendifyError('userIdProfessional is required!', 400);
+    }
+
+    if (!date) {
+      throw new AgendifyError('date is required!', 400);
+    }
+
+    const user = await UserModule.listUser(userIdProfessional);
 
     const events = await EventRepository.findAll(user.id, date);
 
     return events;
   }
 
-  async listEvent(response, userId) {
+  async listEvent(userId) {
+    if (!userId) {
+      throw new AgendifyError('userId is required!', 400);
+    }
+
     const event = await EventRepository.findById(userId);
 
     if (!event) {
-      const error = { error: 'Event not found' };
-      response.status(404).json(error);
-      throw new Error(error);
+      throw new AgendifyError('Event not found', 404);
     }
 
     return event;
   }
 
-  async createUser(name, email, password, phone, type_user, professional) {
-    if (!name) {
-      return { error: 'Name is required' };
+  async createEvent(
+    userIdProfessional,
+    userIdClient,
+    dateEvent,
+    startTime,
+    endTime,
+    status,
+    updated,
+    summary,
+    description,
+    color,
+  ) {
+    if (!userIdProfessional) {
+      throw new AgendifyError('userIdProfessional is required!', 400);
     }
 
-    const userExists = await EventRepository.findByEmail(email);
-
-    if (userExists) {
-      return { error: 'This e-mail is already in use' };
+    if (!userIdClient) {
+      throw new AgendifyError('userIdClient is required!', 400);
     }
 
-    const user = await EventRepository.create({
-      name, email, password, phone, type_user,
+    if (!dateEvent) {
+      throw new AgendifyError('dateEvent is required!', 400);
+    }
+
+    if (!startTime) {
+      throw new AgendifyError('startTime is required!', 400);
+    }
+
+    if (!endTime) {
+      throw new AgendifyError('endTime is required!', 400);
+    }
+
+    if (!summary) {
+      throw new AgendifyError('summary is required!', 400);
+    }
+
+    if (!description) {
+      throw new AgendifyError('description is required!', 400);
+    }
+
+    const event = await EventRepository.create({
+      userIdProfessional,
+      userIdClient,
+      dateEvent,
+      startTime,
+      endTime,
+      status,
+      updated,
+      summary,
+      description,
+      color,
     });
 
-    if (type_user === 'P') {
-      const userProfessional = await ProfessionalRepository.create(user.id, professional);
-      user.professional = userProfessional;
-    }
-
-    return user;
+    return event;
   }
 
-  async updateUser(id, {
-    name, password, phone, type_user, professional,
+  async updateEvent(id, {
+    // userIdProfessional,
+    // userIdClient,
+    dateEvent,
+    startTime,
+    endTime,
+    status,
+    summary,
+    description,
+    color,
   }) {
-    const userExists = await EventRepository.findById(id);
-    if (!userExists) {
-      return { error: 'User not found' };
+    const event = this.listEvent(id);
+    if (!event) {
+      throw new AgendifyError('Event not found!', 404);
     }
 
-    if (!name) {
-      return { error: 'Name is required' };
-    }
+    // TODO: Criar função que recebe [dateEvent, startTime, endTime] e retorne se está livre
+    // TODO: Se recebeu as props [dateEvent, startTime, endTime] validar com a função acima
 
-    if (userExists.type_user === 'P') {
-      const professionalExists = await ProfessionalRepository.findByUserId(id);
+    // TODO: Criar função para buscar se o novo cliente possui um agendamento no mesmo horário
+    // TODO: Usar a função acima para permitir alteração de cliente
 
-      if (!professionalExists) {
-        return { error: 'User not found' };
-      }
-    }
+    // TODO: Alteração de Status, validar se o novo status está correto
 
-    const user = await EventRepository.update(id, {
-      name, password, phone, type_user,
+    const eventUpdated = await EventRepository.update(id, {
+      // userIdProfessional,
+      // userIdClient,
+      dateEvent,
+      startTime,
+      endTime,
+      status,
+      summary,
+      description,
+      color,
     });
 
-    if (type_user === 'P' && userExists.type_user === 'P') {
-      const professionalUpdated = await ProfessionalRepository.update(id, professional);
-      user.professional = professionalUpdated;
-    } else if (userExists.type_user === 'C' && type_user === 'P') {
-      const professionalCreated = await ProfessionalRepository.create(id, professional);
-      user.professional = professionalCreated;
-    }
-
-    return user;
+    return eventUpdated;
   }
 
-  async deleteUser(id) {
-    await ProfessionalRepository.delete(id);
+  async deleteEvent(id) {
     await EventRepository.delete(id);
   }
 }
