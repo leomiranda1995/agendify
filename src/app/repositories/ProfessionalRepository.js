@@ -36,32 +36,32 @@ class ProfessionalRepository {
   }
 
   async create(user_id, {
-    description, photo, activity, location, type_service,
+    description, banner, activity, location, scheduleAvailability = 30,
   }) {
     const [row] = await db.query(`
       INSERT INTO professionals
-        (description, photo, activity, location, type_service, user_id)
+        (description, banner, activity, location, scheduleAvailability, user_id)
       VALUES
         ($1, $2, $3, $4, $5, $6)
         RETURNING *
-    `, [description, photo, activity, location, type_service, user_id]);
+    `, [description, banner, activity, location, scheduleAvailability, user_id]);
 
     return row;
   }
 
   async update(user_id, {
-    description, photo, activity, location, type_service,
+    description, banner, activity, location, scheduleAvailability,
   }) {
     const [row] = await db.query(`
       UPDATE professionals
          SET description = $1,
-             photo = $2,
+             banner = $2,
              activity = $3,
              location = $4,
-             type_service = $5
+             scheduleAvailability = $5
        WHERE user_id = $6
        RETURNING *
-    `, [description, photo, activity, location, type_service, user_id]);
+    `, [description, banner, activity, location, scheduleAvailability, user_id]);
 
     return row;
   }

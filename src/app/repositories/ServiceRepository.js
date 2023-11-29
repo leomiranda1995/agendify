@@ -26,24 +26,24 @@ class ServiceRepository {
 
   async create({
     name, description, price, duration, availability,
-    special_requirements, optional, photo1, photo2, photo3, user_id,
+    special_requirements, optional, photos, user_id,
   }) {
     const [row] = await db.query(`
       INSERT INTO services
         (name, description, price, duration, availability,
-         special_requirements, optional, photo1, photo2, photo3, user_id)
+         special_requirements, optional, photos, user_id)
       VALUES
-        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *
     `, [name, description, price, duration, availability,
-      special_requirements, optional, photo1, photo2, photo3, user_id]);
+      special_requirements, optional, photos, user_id]);
 
     return row;
   }
 
   async update(id, {
     name, description, price, duration, availability,
-    special_requirements, optional, photo1, photo2, photo3,
+    special_requirements, optional, photos,
   }) {
     const [row] = await db.query(`
       UPDATE services
@@ -54,13 +54,11 @@ class ServiceRepository {
              availability = $5,
              special_requirements = $6,
              optional = $7,
-             photo1 = $8,
-             photo2 = $9,
-             photo3 = $10
-       WHERE id = $11
+             photos = $8
+       WHERE id = $9
        RETURNING *
     `, [name, description, price, duration, availability,
-      special_requirements, optional, photo1, photo2, photo3, id]);
+      special_requirements, optional, photos, id]);
 
     return row;
   }

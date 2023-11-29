@@ -6,17 +6,20 @@ CREATE TABLE IF NOT EXISTS users(
   id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
   name VARCHAR NOT NULL,
   email VARCHAR NOT NULL UNIQUE,
+  photo VARCHAR,
   password VARCHAR NOT NULL,
   phone VARCHAR,
+  status VARCHAR,
   type_user VARCHAR NOT NULL -- 'C'liente / 'P'rofissional
 );
 
 CREATE TABLE IF NOT EXISTS professionals(
   id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
   description VARCHAR,
-  photo VARCHAR,
+  banner VARCHAR,
   activity VARCHAR,
   location VARCHAR,
+  scheduleAvailability NUMERIC(100),
   user_id UUID,
   FOREIGN KEY(user_id) REFERENCES users(id)
 );
@@ -30,9 +33,7 @@ CREATE TABLE IF NOT EXISTS services(
   availability VARCHAR,
   special_requirements VARCHAR,
   optional VARCHAR,
-  photo1 VARCHAR,
-  photo2 VARCHAR,
-  photo3 VARCHAR,
+  photos VARCHAR,
   user_id UUID,
   FOREIGN KEY(user_id) REFERENCES users(id)
 );

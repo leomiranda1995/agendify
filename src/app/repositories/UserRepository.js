@@ -31,31 +31,33 @@ class UserRepository {
   }
 
   async create({
-    name, email, password, phone, type_user,
+    name, email, password, photo, phone, type_user, status = 'A',
   }) {
     const [row] = await db.query(`
       INSERT INTO users
-        (name, email, password, phone, type_user)
+        (name, email, password, photo, phone, type_user, status)
       VALUES
-        ($1, $2, $3, $4, $5)
+        ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *
-    `, [name, email, password, phone, type_user]);
+    `, [name, email, password, photo, phone, type_user, status]);
 
     return row;
   }
 
   async update(id, {
-    name, password, phone, type_user,
+    name, password, photo, phone, status = 'A', type_user,
   }) {
     const [row] = await db.query(`
       UPDATE users
          SET name = $1,
              password = $2,
-             phone = $3,
-             type_user = $4
-       WHERE id = $5
+             photo = $3,
+             phone = $4,
+             status = $5,
+             type_user = $6
+       WHERE id = $7
        RETURNING *
-    `, [name, password, phone, type_user, id]);
+    `, [name, password, photo, phone, status, type_user, id]);
 
     return row;
   }

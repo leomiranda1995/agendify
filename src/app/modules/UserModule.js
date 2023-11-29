@@ -31,7 +31,7 @@ class UserModule {
   }
 
   async createUser({
-    name, email, password, phone, type_user, professional,
+    name, email, password, photo, phone, type_user, professional,
   }) {
     if (!name) {
       throw new AgendifyError('Name is required!', 404);
@@ -43,7 +43,7 @@ class UserModule {
     }
 
     const user = await UserRepository.create({
-      name, email, password, phone, type_user,
+      name, email, password, photo, phone, type_user,
     });
 
     if (type_user === 'P') {
@@ -55,7 +55,7 @@ class UserModule {
   }
 
   async updateUser(id, {
-    name, password, phone, type_user, professional,
+    name, password, photo, phone, status = 'A', type_user, professional,
   }) {
     const userExists = await UserRepository.findById(id);
     if (!userExists) {
@@ -75,7 +75,7 @@ class UserModule {
     }
 
     const user = await UserRepository.update(id, {
-      name, password, phone, type_user,
+      name, password, photo, phone, status, type_user,
     });
 
     if (type_user === 'P' && userExists.type_user === 'P') {

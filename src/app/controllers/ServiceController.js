@@ -29,7 +29,7 @@ class ServiceController {
     try {
       const {
         name, description, price, duration, availability,
-        special_requirements, optional, photo1, photo2, photo3, user_id,
+        special_requirements, optional, photos, user_id,
       } = request.body;
 
       const service = await ServiceModule.createService({
@@ -40,9 +40,7 @@ class ServiceController {
         availability,
         special_requirements,
         optional,
-        photo1,
-        photo2,
-        photo3,
+        photos,
         user_id,
       });
 
@@ -57,7 +55,7 @@ class ServiceController {
       const { id } = request.params;
       const {
         name, description, price, duration, availability,
-        special_requirements, optional, photo1, photo2, photo3,
+        special_requirements, optional, photos,
       } = request.body;
 
       const service = await ServiceModule.updateService(id, {
@@ -68,9 +66,7 @@ class ServiceController {
         availability,
         special_requirements,
         optional,
-        photo1,
-        photo2,
-        photo3,
+        photos,
       });
 
       response.json(service);

@@ -28,13 +28,14 @@ class UserController {
   async store(request, response) {
     try {
       const {
-        name, email, password, phone, type_user, professional,
+        name, email, password, photo, phone, type_user, professional,
       } = request.body;
 
       const user = await UserModule.createUser({
         name,
         email,
         password,
+        photo,
         phone,
         type_user,
         professional,
@@ -52,11 +53,11 @@ class UserController {
     try {
       const { id } = request.params;
       const {
-        name, password, phone, type_user, professional,
+        name, password, photo, phone, status, type_user, professional,
       } = request.body;
 
       const userUpdated = await UserModule.updateUser(id, {
-        name, password, phone, type_user, professional,
+        name, password, photo, phone, status, type_user, professional,
       });
 
       response.json(userUpdated);

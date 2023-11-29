@@ -21,7 +21,7 @@ class ServiceModule {
 
   async createService({
     name, description, price, duration, availability,
-    special_requirements, optional, photo1, photo2, photo3, user_id,
+    special_requirements, optional, photos, user_id,
   }) {
     const user = await UserModule.listUser(user_id);
 
@@ -41,9 +41,7 @@ class ServiceModule {
       availability,
       special_requirements,
       optional,
-      photo1,
-      photo2,
-      photo3,
+      photos,
       user_id,
     });
 
@@ -52,7 +50,7 @@ class ServiceModule {
 
   async updateService(id, {
     name, description, price, duration, availability,
-    special_requirements, optional, photo1, photo2, photo3,
+    special_requirements, optional, photos,
   }) {
     const serviceExists = await ServicesRepository.findById(id);
     if (!serviceExists) {
@@ -67,9 +65,7 @@ class ServiceModule {
       availability,
       special_requirements,
       optional,
-      photo1,
-      photo2,
-      photo3,
+      photos,
     });
 
     return service;
