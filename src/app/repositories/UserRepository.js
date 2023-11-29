@@ -1,4 +1,4 @@
-const db = require('../../database');
+const db = require('../configs/database');
 
 class UserRepository {
   async findAll(orderBy = 'ASC', userTypeFilter = '') {
