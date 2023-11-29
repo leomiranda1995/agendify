@@ -17,7 +17,7 @@ class UserModule {
     return usersWithProfessional;
   }
 
-  async listUser(response, userId) {
+  async listUser(userId) {
     const user = await UserRepository.findById(userId);
 
     if (!user) {

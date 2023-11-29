@@ -38,7 +38,7 @@ class ServiceController {
         special_requirements, optional, photo1, photo2, photo3, user_id,
       } = request.body;
 
-      const service = ServiceModule.createService(
+      const service = await ServiceModule.createService({
         name,
         description,
         price,
@@ -50,7 +50,7 @@ class ServiceController {
         photo2,
         photo3,
         user_id,
-      );
+      });
 
       response.json(service);
     } catch (e) {
@@ -66,7 +66,7 @@ class ServiceController {
         special_requirements, optional, photo1, photo2, photo3,
       } = request.body;
 
-      const service = ServiceModule.updateService(id, {
+      const service = await ServiceModule.updateService(id, {
         name,
         description,
         price,
