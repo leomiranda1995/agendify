@@ -1,6 +1,7 @@
 const AgendifyError = require('../exceptions/AgendifyException');
 const EventRepository = require('../repositories/EventRepository');
 const UserModule = require('./UserModule');
+const ServiceModule = require('./ServiceModule');
 
 class EventModule {
   async listEventsByDate(userIdProfessional, date/* , agendaDisponivel */) {
@@ -19,6 +20,14 @@ class EventModule {
 
     const events = await EventRepository.findAll(user.id, date);
 
+    events.map((event) => {
+      event.created = event.created.toLocaleString();
+      if (event.updated) {
+        event.updated = event.updated.toLocaleString();
+      }
+      return event;
+    });
+
     return events;
   }
 
@@ -33,19 +42,22 @@ class EventModule {
       throw new AgendifyError('Event not found', 404);
     }
 
+    event.created = event.created.toLocaleString();
+    if (event.updated) {
+      event.updated = event.updated.toLocaleString();
+    }
+
     return event;
   }
 
   async createEvent(
     userIdProfessional,
     userIdClient,
+    serviceId,
     dateEvent,
     startTime,
     endTime,
-    status,
-    updated,
-    summary,
-    description,
+    observation,
     color,
   ) {
     if (!userIdProfessional) {
@@ -54,6 +66,10 @@ class EventModule {
 
     if (!userIdClient) {
       throw new AgendifyError('userIdClient is required!', 400);
+    }
+
+    if (!serviceId) {
+      throw new AgendifyError('serviceId is required!', 400);
     }
 
     if (!dateEvent) {
@@ -68,65 +84,68 @@ class EventModule {
       throw new AgendifyError('endTime is required!', 400);
     }
 
-    if (!summary) {
-      throw new AgendifyError('summary is required!', 400);
-    }
+    const userProfessional = await UserModule.listUser(userIdProfessional);
+    const userClient = await UserModule.listUser(userIdClient);
+    const service = await ServiceModule.listService(serviceId);
 
-    if (!description) {
-      throw new AgendifyError('description is required!', 400);
-    }
+    // TODO: função para validar se a data e hora está livre na agenda do profissional
 
     const event = await EventRepository.create({
-      userIdProfessional,
-      userIdClient,
+      userIdProfessional: userProfessional.id,
+      userIdClient: userClient.id,
+      serviceId: service.id,
       dateEvent,
       startTime,
       endTime,
-      status,
-      updated,
-      summary,
-      description,
+      observation,
       color,
     });
+
+    event.created = event.created.toLocaleString();
 
     return event;
   }
 
   async updateEvent(id, {
-    // userIdProfessional,
-    // userIdClient,
+    userIdClient,
+    serviceId,
     dateEvent,
     startTime,
     endTime,
     status,
-    summary,
-    description,
+    observation,
     color,
   }) {
-    const event = this.listEvent(id);
+    const event = await this.listEvent(id);
     if (!event) {
       throw new AgendifyError('Event not found!', 404);
     }
 
-    // TODO: Criar função que recebe [dateEvent, startTime, endTime] e retorne se está livre
-    // TODO: Se recebeu as props [dateEvent, startTime, endTime] validar com a função acima
+    // TODO: [userIdClient]
+    // TODO: Validar se o usuário profissional existe
 
-    // TODO: Criar função para buscar se o novo cliente possui um agendamento no mesmo horário
-    // TODO: Usar a função acima para permitir alteração de cliente
+    // TODO: [serviceId]
+    // TODO: Validar se o serviço existe
 
+    // TODO: [dateEvent, startTime, endTime]
+    // TODO: Função para validar se a nova data e hora está livre na agenda do profissional
+
+    // TODO: [status]
     // TODO: Alteração de Status, validar se o novo status está correto
 
     const eventUpdated = await EventRepository.update(id, {
-      // userIdProfessional,
-      // userIdClient,
+      userIdClient,
+      serviceId,
       dateEvent,
       startTime,
       endTime,
       status,
-      summary,
-      description,
+      observation,
       color,
     });
+
+    eventUpdated.created = eventUpdated.created.toLocaleString();
+    eventUpdated.updated = eventUpdated.updated.toLocaleString();
 
     return eventUpdated;
   }

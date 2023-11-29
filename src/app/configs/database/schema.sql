@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS professionals(
   photo VARCHAR,
   activity VARCHAR,
   location VARCHAR,
-  type_service VARCHAR NOT NULL, -- 'T'empo / 'P'ersonalizado
   user_id UUID,
   FOREIGN KEY(user_id) REFERENCES users(id)
 );
@@ -53,26 +52,16 @@ CREATE TABLE IF NOT EXISTS events(
   id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
   userIdProfessional UUID NOT NULL,
   userIdClient UUID NOT NULL,
-  dateEvent TIMESTAMP NOT NULL,
+  serviceId UUID NOT NULL,
+  dateEvent DATE NOT NULL,
   startTime TIME NOT NULL,
   endTime TIME NOT NULL,
   status VARCHAR,
   created TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'America/Sao_Paulo'),
   updated TIMESTAMP,
-  summary VARCHAR,
-  description VARCHAR,
+  observation VARCHAR,
   color VARCHAR,
+  FOREIGN KEY(serviceId) REFERENCES services(id),
   FOREIGN KEY(userIdProfessional) REFERENCES users(id),
   FOREIGN KEY(userIdClient) REFERENCES users(id)
 );
-
--- CREATE TABLE IF NOT EXISTS event_services(
---   id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
---   summary VARCHAR,
---   description VARCHAR,
---   price NUMERIC(10,2),
---   service_id UUID NOT NULL,
---   evnt_id UUID NOT NULL,
---   FOREIGN KEY(event_id) REFERENCES events(id),
---   FOREIGN KEY(service_id) REFERENCES services(id)
--- );

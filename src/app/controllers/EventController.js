@@ -31,26 +31,22 @@ class EventController {
       const {
         userIdProfessional,
         userIdClient,
+        serviceId,
         dateEvent,
         startTime,
         endTime,
-        status,
-        updated,
-        summary,
-        description,
+        observation,
         color,
       } = request.body;
 
       const event = await EventModule.createEvent(
         userIdProfessional,
         userIdClient,
+        serviceId,
         dateEvent,
         startTime,
         endTime,
-        status,
-        updated,
-        summary,
-        description,
+        observation,
         color,
       );
 
@@ -64,26 +60,24 @@ class EventController {
     try {
       const { id } = request.params;
       const {
-        // userIdProfessional,
-        // userIdClient,
+        userIdClient,
+        serviceId,
         dateEvent,
         startTime,
         endTime,
         status,
-        summary,
-        description,
+        observation,
         color,
       } = request.body;
 
       const eventUpdated = await EventModule.updateEvent(id, {
-        // userIdProfessional,
-        // userIdClient,
+        userIdClient,
+        serviceId,
         dateEvent,
         startTime,
         endTime,
         status,
-        summary,
-        description,
+        observation,
         color,
       });
 

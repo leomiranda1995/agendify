@@ -26,29 +26,27 @@ class EventRepository {
   async create({
     userIdProfessional,
     userIdClient,
+    serviceId,
     dateEvent,
     startTime,
     endTime,
     status = 'A',
-    updated,
-    summary,
-    description,
+    observation,
     color = 'blue',
   }) {
     const [row] = await db.query(`
-    INSERT INTO events (userIdProfessional, userIdClient, dateEvent, startTime, endTime, status, updated, summary, description, color)
-    values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    INSERT INTO events (userIdProfessional, userIdClient, serviceId, dateEvent, startTime, endTime, status, observation, color)
+    values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *
     `, [
       userIdProfessional,
       userIdClient,
+      serviceId,
       dateEvent,
       startTime,
       endTime,
       status,
-      updated,
-      summary,
-      description,
+      observation,
       color,
     ]);
 
@@ -56,33 +54,36 @@ class EventRepository {
   }
 
   async update(id, {
+    userIdClient,
+    serviceId,
     dateEvent,
     startTime,
     endTime,
     status,
-    summary,
-    description,
+    observation,
     color,
   }) {
     const [row] = await db.query(`
       UPDATE events
-         SET dateEvent = $1,
-             startTime = $2,
-             endTime = $3,
-             status = $4,
-             summary = $5,
-             description = $6,
-             color = $7,
+         SET userIdClient = $1,
+             serviceId = $2,
+             dateEvent = $3,
+             startTime = $4,
+             endTime = $5,
+             status = $6,
+             observation = $7,
+             color = $8,
              updated = timezone('America/Sao_Paulo', CURRENT_TIMESTAMP)
-       WHERE id = $8
+       WHERE id = $9
        RETURNING *
     `, [
+      userIdClient,
+      serviceId,
       dateEvent,
       startTime,
       endTime,
       status,
-      summary,
-      description,
+      observation,
       color,
       id,
     ]);
