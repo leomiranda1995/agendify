@@ -1,5 +1,5 @@
-const ServicesRepository = require('../repositories/ServicesRepository');
-const AgendifyError = require('../../exceptions/AgendifyException');
+const AgendifyError = require('../exceptions/AgendifyException');
+const ServicesRepository = require('../repositories/ServiceRepository');
 const UserModule = require('./UserModule');
 
 class ServiceModule {
@@ -11,6 +11,10 @@ class ServiceModule {
 
   async listService(id) {
     const service = await ServicesRepository.findById(id);
+
+    if (!service) {
+      throw new AgendifyError('Service not found', 400);
+    }
 
     return service;
   }

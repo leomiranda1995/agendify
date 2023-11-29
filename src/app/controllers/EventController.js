@@ -1,4 +1,4 @@
-const EventModule = require('../module/EventModule');
+const EventModule = require('../modules/EventModule');
 
 class EventController {
   async index(request, response) {

@@ -1,13 +1,11 @@
-const ServicesRepository = require('../repositories/ServicesRepository');
-const ServicesModule = require('../module/ServiceModule');
-const ServiceModule = require('../module/ServiceModule');
+const ServiceModule = require('../modules/ServiceModule');
 
 class ServiceController {
   async index(request, response) {
     try {
       const { orderBy, userId } = request.query;
 
-      const services = await ServicesModule.listServices(orderBy, userId);
+      const services = await ServiceModule.listServices(orderBy, userId);
 
       response.json(services);
     } catch (e) {
@@ -19,11 +17,7 @@ class ServiceController {
     try {
       const { id } = request.params;
 
-      const service = await ServicesRepository.findById(id);
-
-      if (!service) {
-        return response.status(404).json({ error: 'Service not found' });
-      }
+      const service = await ServiceModule.listService(id);
 
       response.json(service);
     } catch (e) {

@@ -1,6 +1,6 @@
+const AgendifyError = require('../exceptions/AgendifyException');
 const UserRepository = require('../repositories/UserRepository');
 const ProfessionalRepository = require('../repositories/ProfessionalRepository');
-const AgendifyError = require('../../exceptions/AgendifyException');
 
 class UserModule {
   async listUsers(orderBy = 'ASC', userTypeFilter = '') {
@@ -30,7 +30,7 @@ class UserModule {
     return user;
   }
 
-  async createUser(response, {
+  async createUser({
     name, email, password, phone, type_user, professional,
   }) {
     if (!name) {
@@ -54,7 +54,7 @@ class UserModule {
     return user;
   }
 
-  async updateUser(response, id, {
+  async updateUser(id, {
     name, password, phone, type_user, professional,
   }) {
     const userExists = await UserRepository.findById(id);

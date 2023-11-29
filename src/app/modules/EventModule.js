@@ -1,3 +1,4 @@
+// const AgendifyError = require('../exceptions/AgendifyException');
 const EventRepository = require('../repositories/EventRepository');
 const ProfessionalRepository = require('../repositories/ProfessionalRepository');
 const UserModule = require('./UserModule');

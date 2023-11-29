@@ -1,6 +1,6 @@
 const db = require('../../database');
 
-class ServicesRepository {
+class ServiceRepository {
   async findAll(orderBy = 'ASC', userId = '') {
     const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
     const whereUserId = (userId !== '' ? `where u.id = '${userId}'` : '');
@@ -71,4 +71,4 @@ class ServicesRepository {
   }
 }
 
-module.exports = new ServicesRepository();
+module.exports = new ServiceRepository();

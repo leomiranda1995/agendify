@@ -1,4 +1,4 @@
-const UserModule = require('../module/UserModule');
+const UserModule = require('../modules/UserModule');
 
 class UserController {
   async index(request, response) {
@@ -17,7 +17,7 @@ class UserController {
     try {
       const { user_id } = request.params;
 
-      const user = await UserModule.listUser(response, user_id);
+      const user = await UserModule.listUser(user_id);
 
       response.json(user);
     } catch (e) {
@@ -31,7 +31,7 @@ class UserController {
         name, email, password, phone, type_user, professional,
       } = request.body;
 
-      const user = await UserModule.createUser(response, {
+      const user = await UserModule.createUser({
         name,
         email,
         password,
@@ -39,6 +39,8 @@ class UserController {
         type_user,
         professional,
       });
+
+      // criar padrão agenda...
 
       response.json(user);
     } catch (e) {
@@ -53,7 +55,7 @@ class UserController {
         name, password, phone, type_user, professional,
       } = request.body;
 
-      const userUpdated = await UserModule.updateUser(response, id, {
+      const userUpdated = await UserModule.updateUser(id, {
         name, password, phone, type_user, professional,
       });
 
