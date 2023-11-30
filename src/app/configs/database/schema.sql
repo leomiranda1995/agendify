@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS schedule(
   id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
   userIdProfessional UUID,
   weekDay weekDays NOT NULL,
+  status varchar not null default 'A',
   startTime TIME NOT NULL,
   endTime TIME NOT NULL,
   FOREIGN KEY(userIdProfessional) REFERENCES users(id)
