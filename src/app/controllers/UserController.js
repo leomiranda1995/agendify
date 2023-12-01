@@ -77,6 +77,18 @@ class UserController {
       response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
     }
   }
+
+  async login(request, response) {
+    try {
+      const { email, password } = request.body;
+
+      const token = await UserModule.login(email, password);
+
+      response.json(token);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
+    }
+  }
 }
 
 module.exports = new UserController();

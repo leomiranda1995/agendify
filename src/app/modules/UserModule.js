@@ -1,3 +1,6 @@
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const AgendifyError = require('../exceptions/AgendifyException');
 const UserRepository = require('../repositories/UserRepository');
 const ProfessionalRepository = require('../repositories/ProfessionalRepository');
@@ -41,6 +44,8 @@ class UserModule {
     if (userExists) {
       throw new AgendifyError('This e-mail is already in use', 404);
     }
+
+    password = await bcrypt.hash(password, 10);
 
     const user = await UserRepository.create({
       name, email, password, photo, phone, type_user,
@@ -92,6 +97,31 @@ class UserModule {
   async deleteUser(id) {
     await ProfessionalRepository.delete(id);
     await UserRepository.delete(id);
+  }
+
+  async login(email, password) {
+    if (!email) {
+      throw new AgendifyError('Email is required!', 404);
+    }
+
+    if (!password) {
+      throw new AgendifyError('Password is required!', 404);
+    }
+
+    const user = await UserRepository.findByEmail(email);
+    if (!user) {
+      throw new AgendifyError('Incorrect email or password', 401);
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      throw new AgendifyError('Incorrect email or password', 401);
+    }
+
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+    return { auth: true, token };
   }
 }
 
