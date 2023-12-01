@@ -39,14 +39,18 @@ CREATE TABLE IF NOT EXISTS services(
 
 CREATE TYPE weekDays AS ENUM ('domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado');
 
-CREATE TABLE IF NOT EXISTS schedule(
+CREATE TABLE IF NOT EXISTS professional_weekdays(
   id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
-  userIdProfessional UUID,
+  userIdProfessional UUID NOT NULL,
   weekDay weekDays NOT NULL,
-  status varchar not null default 'A',
-  startTime TIME NOT NULL,
-  endTime TIME NOT NULL,
+  work VARCHAR DEFAULT 'S',
   FOREIGN KEY(userIdProfessional) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS professional_weekday_times(
+  id_weekday UUID,
+  startTime TIME NOT NULL UNIQUE,
+  FOREIGN KEY(id_weekday) REFERENCES professional_weekdays(id)
 );
 
 CREATE TABLE IF NOT EXISTS events(
@@ -56,7 +60,6 @@ CREATE TABLE IF NOT EXISTS events(
   serviceId UUID NOT NULL,
   dateEvent DATE NOT NULL,
   startTime TIME NOT NULL,
-  endTime TIME NOT NULL,
   status VARCHAR,
   created TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'America/Sao_Paulo'),
   updated TIMESTAMP,

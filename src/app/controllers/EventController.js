@@ -34,7 +34,6 @@ class EventController {
         serviceId,
         dateEvent,
         startTime,
-        endTime,
         observation,
         color,
       } = request.body;
@@ -45,7 +44,6 @@ class EventController {
         serviceId,
         dateEvent,
         startTime,
-        endTime,
         observation,
         color,
       );
@@ -64,7 +62,6 @@ class EventController {
         serviceId,
         dateEvent,
         startTime,
-        endTime,
         status,
         observation,
         color,
@@ -75,7 +72,6 @@ class EventController {
         serviceId,
         dateEvent,
         startTime,
-        endTime,
         status,
         observation,
         color,

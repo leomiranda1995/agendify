@@ -56,7 +56,6 @@ class EventModule {
     serviceId,
     dateEvent,
     startTime,
-    endTime,
     observation,
     color,
   ) {
@@ -80,10 +79,6 @@ class EventModule {
       throw new AgendifyError('startTime is required!', 400);
     }
 
-    if (!endTime) {
-      throw new AgendifyError('endTime is required!', 400);
-    }
-
     const userProfessional = await UserModule.listUser(userIdProfessional);
     const userClient = await UserModule.listUser(userIdClient);
     const service = await ServiceModule.listService(serviceId);
@@ -96,7 +91,6 @@ class EventModule {
       serviceId: service.id,
       dateEvent,
       startTime,
-      endTime,
       observation,
       color,
     });
@@ -111,7 +105,6 @@ class EventModule {
     serviceId,
     dateEvent,
     startTime,
-    endTime,
     status,
     observation,
     color,
@@ -127,9 +120,6 @@ class EventModule {
     // TODO: [serviceId]
     // TODO: Validar se o serviço existe
 
-    // TODO: [dateEvent, startTime, endTime]
-    // TODO: Função para validar se a nova data e hora está livre na agenda do profissional
-
     // TODO: [status]
     // TODO: Alteração de Status, validar se o novo status está correto
 
@@ -138,7 +128,6 @@ class EventModule {
       serviceId,
       dateEvent,
       startTime,
-      endTime,
       status,
       observation,
       color,

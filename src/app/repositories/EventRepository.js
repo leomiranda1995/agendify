@@ -29,14 +29,13 @@ class EventRepository {
     serviceId,
     dateEvent,
     startTime,
-    endTime,
     status = 'A',
     observation,
     color = 'blue',
   }) {
     const [row] = await db.query(`
-    INSERT INTO events (userIdProfessional, userIdClient, serviceId, dateEvent, startTime, endTime, status, observation, color)
-    values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    INSERT INTO events (userIdProfessional, userIdClient, serviceId, dateEvent, startTime, status, observation, color)
+    values ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *
     `, [
       userIdProfessional,
@@ -44,7 +43,6 @@ class EventRepository {
       serviceId,
       dateEvent,
       startTime,
-      endTime,
       status,
       observation,
       color,
@@ -58,7 +56,6 @@ class EventRepository {
     serviceId,
     dateEvent,
     startTime,
-    endTime,
     status,
     observation,
     color,
@@ -69,19 +66,17 @@ class EventRepository {
              serviceId = $2,
              dateEvent = $3,
              startTime = $4,
-             endTime = $5,
-             status = $6,
-             observation = $7,
-             color = $8,
+             status = $5,
+             observation = $6,
+             color = $7,
              updated = timezone('America/Sao_Paulo', CURRENT_TIMESTAMP)
-       WHERE id = $9
+       WHERE id = $8
        RETURNING *
     `, [
       userIdClient,
       serviceId,
       dateEvent,
       startTime,
-      endTime,
       status,
       observation,
       color,
