@@ -20,7 +20,7 @@ class ServiceModule {
   }
 
   async createService({
-    name, description, price, duration, availability,
+    name, description, price, availability,
     special_requirements, optional, photos, user_id,
   }) {
     const user = await UserModule.listUser(user_id);
@@ -37,7 +37,6 @@ class ServiceModule {
       name,
       description,
       price,
-      duration,
       availability,
       special_requirements,
       optional,
@@ -49,7 +48,7 @@ class ServiceModule {
   }
 
   async updateService(id, {
-    name, description, price, duration, availability,
+    name, description, price, availability,
     special_requirements, optional, photos,
   }) {
     const serviceExists = await ServicesRepository.findById(id);
@@ -61,7 +60,6 @@ class ServiceModule {
       name,
       description,
       price,
-      duration,
       availability,
       special_requirements,
       optional,

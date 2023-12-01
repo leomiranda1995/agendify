@@ -25,24 +25,24 @@ class ServiceRepository {
   }
 
   async create({
-    name, description, price, duration, availability,
+    name, description, price, availability,
     special_requirements, optional, photos, user_id,
   }) {
     const [row] = await db.query(`
       INSERT INTO services
-        (name, description, price, duration, availability,
+        (name, description, price, availability,
          special_requirements, optional, photos, user_id)
       VALUES
-        ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *
-    `, [name, description, price, duration, availability,
+    `, [name, description, price, availability,
       special_requirements, optional, photos, user_id]);
 
     return row;
   }
 
   async update(id, {
-    name, description, price, duration, availability,
+    name, description, price, availability,
     special_requirements, optional, photos,
   }) {
     const [row] = await db.query(`
@@ -50,14 +50,13 @@ class ServiceRepository {
          SET name = $1,
              description = $2,
              price = $3,
-             duration = $4,
-             availability = $5,
-             special_requirements = $6,
-             optional = $7,
-             photos = $8
-       WHERE id = $9
+             availability = $4,
+             special_requirements = $5,
+             optional = $6,
+             photos = $7
+       WHERE id = $8
        RETURNING *
-    `, [name, description, price, duration, availability,
+    `, [name, description, price, availability,
       special_requirements, optional, photos, id]);
 
     return row;

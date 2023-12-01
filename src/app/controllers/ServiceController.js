@@ -28,7 +28,7 @@ class ServiceController {
   async store(request, response) {
     try {
       const {
-        name, description, price, duration, availability,
+        name, description, price, availability,
         special_requirements, optional, photos, user_id,
       } = request.body;
 
@@ -36,7 +36,6 @@ class ServiceController {
         name,
         description,
         price,
-        duration,
         availability,
         special_requirements,
         optional,
@@ -54,7 +53,7 @@ class ServiceController {
     try {
       const { id } = request.params;
       const {
-        name, description, price, duration, availability,
+        name, description, price, availability,
         special_requirements, optional, photos,
       } = request.body;
 
@@ -62,7 +61,6 @@ class ServiceController {
         name,
         description,
         price,
-        duration,
         availability,
         special_requirements,
         optional,

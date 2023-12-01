@@ -29,7 +29,6 @@ CREATE TABLE IF NOT EXISTS services(
   name VARCHAR NOT NULL,
   description VARCHAR,
   price NUMERIC(10,2),
-  duration VARCHAR,
   availability VARCHAR,
   special_requirements VARCHAR,
   optional VARCHAR,
