@@ -33,12 +33,24 @@ class ScheduleModule {
       newSchedule.events = timesConfig.starttimes.map((time) => {
         const aux = {};
         aux.time = time;
-        aux.event = events.filter((event) => {
+        aux.event = events.find((event) => {
           const teste = moment(event.dateevent).format('YYYY-MM-DD');
           return (teste === newSchedule.dia && event.starttime === time);
         });
 
         return aux;
+      });
+
+      const eventsNotInTimesConfig = events.filter((event) => (
+        moment(event.dateevent).format('YYYY-MM-DD') === newSchedule.dia
+            && !newSchedule.events.find((scheduleEvent) => scheduleEvent.time === event.starttime)
+      ));
+
+      eventsNotInTimesConfig.forEach((eventNotInTimesConfig) => {
+        newSchedule.events.push({
+          time: eventNotInTimesConfig.starttime,
+          event: eventNotInTimesConfig,
+        });
       });
 
       schedule.push(newSchedule);
