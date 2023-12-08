@@ -4,6 +4,8 @@ require('dotenv').config();
 const AgendifyError = require('../exceptions/AgendifyException');
 const UserRepository = require('../repositories/UserRepository');
 const ProfessionalRepository = require('../repositories/ProfessionalRepository');
+const ScheduleConfigRepository = require('../repositories/ScheduleConfigRepository');
+const ScheduleConfigModule = require('./ScheduleConfigModule');
 
 class UserModule {
   async listUsers(orderBy = 'ASC', userTypeFilter = '') {
@@ -54,6 +56,10 @@ class UserModule {
     if (type_user === 'P') {
       const userProfessional = await ProfessionalRepository.create(user.id, professional);
       user.professional = userProfessional;
+
+      const schedule = await ScheduleConfigModule.createDefaultSchedule(user.id);
+
+      user.professional.schedule = schedule;
     }
 
     return user;
@@ -95,6 +101,7 @@ class UserModule {
   }
 
   async deleteUser(id) {
+    await ScheduleConfigRepository.deleteScheduleProfessionalId(id);
     await ProfessionalRepository.delete(id);
     await UserRepository.delete(id);
   }

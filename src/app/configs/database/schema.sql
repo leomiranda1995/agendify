@@ -37,29 +37,30 @@ CREATE TABLE IF NOT EXISTS services(
   FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
-CREATE TYPE weekDays AS ENUM ('domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado');
-
-CREATE TABLE IF NOT EXISTS professional_weekdays(
+CREATE TABLE IF NOT EXISTS professional_weekdays_times(
   id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
   userIdProfessional UUID NOT NULL,
-  weekDay weekDays NOT NULL,
-  work VARCHAR DEFAULT 'S',
+  weekDay VARCHAR NOT NULL,
+  indice numeric(1),
+  work BOOLEAN DEFAULT true,
+  startTimes VARCHAR[] NOT NULL,
   FOREIGN KEY(userIdProfessional) REFERENCES users(id)
-);
-
-CREATE TABLE IF NOT EXISTS professional_weekday_times(
-  id_weekday UUID,
-  startTime TIME NOT NULL UNIQUE,
-  FOREIGN KEY(id_weekday) REFERENCES professional_weekdays(id)
 );
 
 CREATE TABLE IF NOT EXISTS events(
   id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
   userIdProfessional UUID NOT NULL,
+
+  /*
+    Cliente não pode ter FK
+      - profissional fazer um agendamento manual, pode querer informar um cliente que não está cadastrado
+      - incluir novos campos como nome cliente, email e celular  no evento, caso o profissional inclua um cliente não cadastrado
+      ou que o cliente informe pra chamar ele em outro celular
+  */
   userIdClient UUID NOT NULL,
   serviceId UUID NOT NULL,
   dateEvent DATE NOT NULL,
-  startTime TIME NOT NULL,
+  startTime VARCHAR NOT NULL,
   status VARCHAR,
   created TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'America/Sao_Paulo'),
   updated TIMESTAMP,

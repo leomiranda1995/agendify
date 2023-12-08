@@ -1,14 +1,14 @@
 const db = require('../configs/database');
 
 class EventRepository {
-  async findAll(userIdProfessional, date) {
+  async findAll(userIdProfessional, dateStart, dateEnd) {
     const rows = await db.query(`
     SELECT *
       FROM events
      WHERE userIdProfessional = $1
-       AND dateEvent = $2
-     ORDER BY startTime
-    `, [userIdProfessional, date]);
+       AND dateEvent between $2 and $3
+     ORDER BY dateEvent, startTime
+    `, [userIdProfessional, dateStart, dateEnd]);
 
     return rows;
   }
