@@ -4,7 +4,7 @@ const UserModule = require('./UserModule');
 const ServiceModule = require('./ServiceModule');
 
 class EventModule {
-  async listEventsByDate(userIdProfessional, dateStart, dateEnd/* , agendaDisponivel */) {
+  async listEventsByDate(userIdProfessional, startDate, endDate/* , agendaDisponivel */) {
     // TODO: retornar além dos agendados os horários livres seria bom
     // TODO: assim como ter uma opção de filtro
     // TODO: somente agendados, somente horáriosl livres
@@ -12,13 +12,13 @@ class EventModule {
       throw new AgendifyError('userIdProfessional is required!', 400);
     }
 
-    if (!dateStart || !dateEnd) {
+    if (!startDate || !endDate) {
       throw new AgendifyError('date is required!', 400);
     }
 
     const user = await UserModule.listUser(userIdProfessional);
 
-    const events = await EventRepository.findAll(user.id, dateStart, dateEnd);
+    const events = await EventRepository.findAll(user.id, startDate, endDate);
 
     events.map((event) => {
       event.created = event.created.toLocaleString();

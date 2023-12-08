@@ -4,10 +4,10 @@ class EventController {
   async index(request, response) {
     try {
       const {
-        userProfessionalId, date,
+        userProfessionalId, startDate, endDate,
       } = request.body;
 
-      const events = await EventModule.listEventsByDate(userProfessionalId, date);
+      const events = await EventModule.listEventsByDate(userProfessionalId, startDate, endDate);
       response.json(events);
     } catch (e) {
       response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
