@@ -53,11 +53,11 @@ class UserController {
     try {
       const { id } = request.params;
       const {
-        name, password, photo, phone, status, type_user, professional,
+        name, photo, phone, status, type_user, professional,
       } = request.body;
 
       const userUpdated = await UserModule.updateUser(id, {
-        name, password, photo, phone, status, type_user, professional,
+        name, photo, phone, status, type_user, professional,
       });
 
       response.json(userUpdated);
