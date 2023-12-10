@@ -66,7 +66,7 @@ class UserModule {
   }
 
   async updateUser(id, {
-    name, password, photo, phone, status = 'A', type_user, professional,
+    name, photo, phone, status = 'A', type_user, professional,
   }) {
     const userExists = await UserRepository.findById(id);
     if (!userExists) {
