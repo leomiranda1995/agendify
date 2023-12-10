@@ -45,19 +45,18 @@ class UserRepository {
   }
 
   async update(id, {
-    name, password, photo, phone, status = 'A', type_user,
+    name, photo, phone, status = 'A', type_user,
   }) {
     const [row] = await db.query(`
       UPDATE users
          SET name = $1,
-             password = $2,
-             photo = $3,
-             phone = $4,
-             status = $5,
-             type_user = $6
-       WHERE id = $7
+             photo = $2,
+             phone = $3,
+             status = $4,
+             type_user = $5
+       WHERE id = $6
        RETURNING *
-    `, [name, password, photo, phone, status, type_user, id]);
+    `, [name, photo, phone, status, type_user, id]);
 
     return row;
   }
