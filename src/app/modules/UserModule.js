@@ -86,7 +86,7 @@ class UserModule {
     }
 
     const user = await UserRepository.update(id, {
-      name, password, photo, phone, status, type_user,
+      name, photo, phone, status, type_user,
     });
 
     if (type_user === 'P' && userExists.type_user === 'P') {
