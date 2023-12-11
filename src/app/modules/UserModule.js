@@ -130,6 +130,20 @@ class UserModule {
 
     return { auth: true, token };
   }
+
+  async updatePassword(id, { newPassword }) {
+    const userExists = await UserRepository.findById(id);
+
+    if (!userExists) {
+      throw new AgendifyError('User not found', 404);
+    }
+
+    newPassword = await bcrypt.hash(newPassword, 10);
+
+    const user = await UserRepository.updatePassword(id, { newPassword });
+
+    return user;
+  }
 }
 
 module.exports = new UserModule();

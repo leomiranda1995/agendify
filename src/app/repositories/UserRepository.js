@@ -65,6 +65,17 @@ class UserRepository {
     const deleteOp = await db.query('DELETE FROM users WHERE id = $1', [id]);
     return deleteOp;
   }
+
+  async updatePassword(id, { newPassword }) {
+    const [row] = await db.query(`
+      UPDATE users
+         SET password = $1
+       WHERE id = $2
+       RETURNING *
+    `, [newPassword, id]);
+
+    return row;
+  }
 }
 
 module.exports = new UserRepository();

@@ -6,7 +6,7 @@ const ScheduleConfigModule = require('./ScheduleConfigModule');
 const EventModule = require('./EventModule');
 
 class ScheduleModule {
-  async listScheduleProfessional(userIdProfessional, startDate = '2023-12-05', endDate = '2023-12-05') {
+  async listScheduleProfessional(userIdProfessional, startDate = '2023-12-05', endDate = '2023-12-05', client = false) {
     const user = await userModule.listUser(userIdProfessional);
 
     if (!user.professional) {
@@ -25,6 +25,7 @@ class ScheduleModule {
       const newSchedule = {};
       newSchedule.dia = startMoment.format('YYYY-MM-DD');
       newSchedule.weekDay = startMoment.format('dddd').toLowerCase();
+      newSchedule.work = scheduleConfig.find((time) => time.weekday === newSchedule.weekDay).work;
 
       const [timesConfig] = scheduleConfig.filter((config) => (
         config.weekday === newSchedule.weekDay
@@ -56,6 +57,15 @@ class ScheduleModule {
       schedule.push(newSchedule);
 
       startMoment.add(1, 'day');
+    }
+
+    if (client) {
+      schedule.map((agenda) => {
+        if (agenda.events) {
+          agenda.events = agenda.events.filter((evento) => !evento.event);
+        }
+        return agenda;
+      });
     }
 
     return schedule;

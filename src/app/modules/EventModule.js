@@ -18,7 +18,7 @@ class EventModule {
 
     const user = await UserModule.listUser(userIdProfessional);
 
-    const events = await EventRepository.findAll(user.id, startDate, endDate);
+    const events = await EventRepository.findAllProfessional(user.id, startDate, endDate);
 
     events.map((event) => {
       event.created = event.created.toLocaleString();
@@ -31,12 +31,32 @@ class EventModule {
     return events;
   }
 
-  async listEvent(userId) {
-    if (!userId) {
-      throw new AgendifyError('userId is required!', 400);
+  async listEventsClient(userIdClient) {
+    if (!userIdClient) {
+      throw new AgendifyError('userIdClient is required!', 400);
     }
 
-    const event = await EventRepository.findById(userId);
+    const user = await UserModule.listUser(userIdClient);
+
+    const events = await EventRepository.findAllClient(user.id);
+
+    events.map((event) => {
+      event.created = event.created.toLocaleString();
+      if (event.updated) {
+        event.updated = event.updated.toLocaleString();
+      }
+      return event;
+    });
+
+    return events;
+  }
+
+  async listEvent(eventId) {
+    if (!eventId) {
+      throw new AgendifyError('eventId is required!', 400);
+    }
+
+    const event = await EventRepository.findById(eventId);
 
     if (!event) {
       throw new AgendifyError('Event not found', 404);

@@ -11,5 +11,6 @@ userRouter.put('/users/:id', authMiddleware, UserController.update);
 userRouter.delete('/users/:id', authMiddleware, UserController.delete);
 
 userRouter.post('/login', UserController.login); // sem auth
+userRouter.put('/updatePassword/:id', authMiddleware, UserController.updatePassword);
 
 module.exports = userRouter;

@@ -89,6 +89,19 @@ class UserController {
       response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
     }
   }
+
+  async updatePassword(request, response) {
+    try {
+      const { id } = request.params;
+      const { newPassword } = request.body;
+
+      const userPasswordUpdated = await UserModule.updatePassword(id, { newPassword });
+
+      response.json(userPasswordUpdated);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
+    }
+  }
 }
 
 module.exports = new UserController();

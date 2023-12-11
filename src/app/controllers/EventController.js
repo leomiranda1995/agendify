@@ -14,6 +14,19 @@ class EventController {
     }
   }
 
+  async eventsClient(request, response) {
+    try {
+      const {
+        userIdClient,
+      } = request.body;
+
+      const events = await EventModule.listEventsClient(userIdClient);
+      response.json(events);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
+    }
+  }
+
   async show(request, response) {
     try {
       const { eventId } = request.params;
