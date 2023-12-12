@@ -4,10 +4,7 @@ const UserModule = require('./UserModule');
 const ServiceModule = require('./ServiceModule');
 
 class EventModule {
-  async listEventsByDate(userIdProfessional, startDate, endDate/* , agendaDisponivel */) {
-    // TODO: retornar além dos agendados os horários livres seria bom
-    // TODO: assim como ter uma opção de filtro
-    // TODO: somente agendados, somente horáriosl livres
+  async listEventsByDate(userIdProfessional, startDate, endDate) {
     if (!userIdProfessional) {
       throw new AgendifyError('userIdProfessional is required!', 400);
     }
@@ -20,13 +17,20 @@ class EventModule {
 
     const events = await EventRepository.findAllProfessional(user.id, startDate, endDate);
 
-    events.map((event) => {
-      event.created = event.created.toLocaleString();
-      if (event.updated) {
-        event.updated = event.updated.toLocaleString();
-      }
-      return event;
-    });
+    await Promise.all(
+      events.map(async (event) => {
+        event.useridprofessional = await UserModule.listUser(event.useridprofessional);
+        // event.useridclient = await UserModule.listUser(event.useridclient);
+        event.serviceid = await ServiceModule.listService(event.serviceid);
+
+        event.created = event.created.toLocaleString();
+        if (event.updated) {
+          event.updated = event.updated.toLocaleString();
+        }
+
+        return event;
+      }),
+    );
 
     return events;
   }
