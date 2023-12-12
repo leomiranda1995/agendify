@@ -25,7 +25,7 @@ class ServiceRepository {
   }
 
   async create({
-    name, description, price, availability,
+    name, description, price, availability = 'A',
     special_requirements, optional, photos, user_id,
   }) {
     const [row] = await db.query(`

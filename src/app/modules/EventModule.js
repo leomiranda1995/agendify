@@ -17,20 +17,13 @@ class EventModule {
 
     const events = await EventRepository.findAllProfessional(user.id, startDate, endDate);
 
-    await Promise.all(
-      events.map(async (event) => {
-        event.useridprofessional = await UserModule.listUser(event.useridprofessional);
-        // event.useridclient = await UserModule.listUser(event.useridclient);
-        event.serviceid = await ServiceModule.listService(event.serviceid);
-
-        event.created = event.created.toLocaleString();
-        if (event.updated) {
-          event.updated = event.updated.toLocaleString();
-        }
-
-        return event;
-      }),
-    );
+    events.map((event) => {
+      event.created = event.created.toLocaleString();
+      if (event.updated) {
+        event.updated = event.updated.toLocaleString();
+      }
+      return event;
+    });
 
     return events;
   }
@@ -74,10 +67,26 @@ class EventModule {
     return event;
   }
 
+  async listEventByDateStartTime(userIdProfessional, dateEvent, startTime) {
+    const event = await EventRepository.findByProfessionalDateStartTime(
+      userIdProfessional,
+      dateEvent,
+      startTime,
+    );
+
+    return event;
+  }
+
   async createEvent(
     userIdProfessional,
     userIdClient,
+    clientName,
+    clientPhone,
+    clientEmail,
     serviceId,
+    serviceDescription,
+    servicePrice,
+    eventDescription,
     dateEvent,
     startTime,
     observation,
@@ -85,14 +94,6 @@ class EventModule {
   ) {
     if (!userIdProfessional) {
       throw new AgendifyError('userIdProfessional is required!', 400);
-    }
-
-    if (!userIdClient) {
-      throw new AgendifyError('userIdClient is required!', 400);
-    }
-
-    if (!serviceId) {
-      throw new AgendifyError('serviceId is required!', 400);
     }
 
     if (!dateEvent) {
@@ -103,16 +104,43 @@ class EventModule {
       throw new AgendifyError('startTime is required!', 400);
     }
 
-    const userProfessional = await UserModule.listUser(userIdProfessional);
-    const userClient = await UserModule.listUser(userIdClient);
-    const service = await ServiceModule.listService(serviceId);
+    const eventDateStartTimeExists = await this.listEventByDateStartTime(
+      userIdProfessional,
+      dateEvent,
+      startTime,
+    );
 
-    // TODO: função para validar se a data e hora está livre na agenda do profissional
+    if (eventDateStartTimeExists) {
+      throw new AgendifyError('Unavailable hours for this professional', 400);
+    }
+
+    const userProfessional = await UserModule.listUser(userIdProfessional);
+
+    if (userIdClient) {
+      const userClient = await UserModule.listUser(userIdClient);
+      clientName = userClient.name;
+      clientPhone = userClient.phone;
+      clientEmail = userClient.email;
+    }
+
+    if (serviceId) {
+      const service = await ServiceModule.listService(serviceId);
+      serviceDescription = service.description;
+      servicePrice = service.price;
+    }
+
+    eventDescription = `${clientName} - ${serviceDescription}`;
 
     const event = await EventRepository.create({
       userIdProfessional: userProfessional.id,
-      userIdClient: userClient.id,
-      serviceId: service.id,
+      userIdClient,
+      clientName,
+      clientPhone,
+      clientEmail,
+      serviceId,
+      serviceDescription,
+      servicePrice,
+      eventDescription,
       dateEvent,
       startTime,
       observation,
@@ -125,8 +153,12 @@ class EventModule {
   }
 
   async updateEvent(id, {
-    userIdClient,
-    serviceId,
+    clientName,
+    clientPhone,
+    clientEmail,
+    serviceDescription,
+    servicePrice,
+    eventDescription,
     dateEvent,
     startTime,
     status,
@@ -138,18 +170,26 @@ class EventModule {
       throw new AgendifyError('Event not found!', 404);
     }
 
-    // TODO: [userIdClient]
-    // TODO: Validar se o usuário profissional existe
+    const eventDateStartTimeExists = await this.listEventByDateStartTime(
+      event.useridprofessional,
+      dateEvent,
+      startTime,
+    );
 
-    // TODO: [serviceId]
-    // TODO: Validar se o serviço existe
+    if (eventDateStartTimeExists && eventDateStartTimeExists.id !== id) {
+      throw new AgendifyError('Unavailable hours for this professional', 400);
+    }
 
     // TODO: [status]
     // TODO: Alteração de Status, validar se o novo status está correto
 
     const eventUpdated = await EventRepository.update(id, {
-      userIdClient,
-      serviceId,
+      clientName,
+      clientPhone,
+      clientEmail,
+      serviceDescription,
+      servicePrice,
+      eventDescription,
       dateEvent,
       startTime,
       status,

@@ -44,7 +44,13 @@ class EventController {
       const {
         userIdProfessional,
         userIdClient,
+        clientName,
+        clientPhone,
+        clientEmail,
         serviceId,
+        serviceDescription,
+        servicePrice,
+        eventDescription,
         dateEvent,
         startTime,
         observation,
@@ -54,7 +60,13 @@ class EventController {
       const event = await EventModule.createEvent(
         userIdProfessional,
         userIdClient,
+        clientName,
+        clientPhone,
+        clientEmail,
         serviceId,
+        serviceDescription,
+        servicePrice,
+        eventDescription,
         dateEvent,
         startTime,
         observation,
@@ -71,8 +83,12 @@ class EventController {
     try {
       const { id } = request.params;
       const {
-        userIdClient,
-        serviceId,
+        clientName,
+        clientPhone,
+        clientEmail,
+        serviceDescription,
+        servicePrice,
+        eventDescription,
         dateEvent,
         startTime,
         status,
@@ -81,8 +97,12 @@ class EventController {
       } = request.body;
 
       const eventUpdated = await EventModule.updateEvent(id, {
-        userIdClient,
-        serviceId,
+        clientName,
+        clientPhone,
+        clientEmail,
+        serviceDescription,
+        servicePrice,
+        eventDescription,
         dateEvent,
         startTime,
         status,

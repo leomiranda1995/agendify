@@ -50,15 +50,14 @@ CREATE TABLE IF NOT EXISTS professional_weekdays_times(
 CREATE TABLE IF NOT EXISTS events(
   id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
   userIdProfessional UUID NOT NULL,
-
-  /*
-    Cliente não pode ter FK
-      - profissional fazer um agendamento manual, pode querer informar um cliente que não está cadastrado
-      - incluir novos campos como nome cliente, email e celular  no evento, caso o profissional inclua um cliente não cadastrado
-      ou que o cliente informe pra chamar ele em outro celular
-  */
-  userIdClient UUID NOT NULL,
-  serviceId UUID NOT NULL,
+  userIdClient UUID,
+  clientName VARCHAR,
+  clientPhone VARCHAR,
+  clientEmail VARCHAR,
+  serviceId UUID,
+  serviceDescription VARCHAR,
+  servicePrice NUMERIC(10,2),
+  eventDescription VARCHAR,
   dateEvent DATE NOT NULL,
   startTime VARCHAR NOT NULL,
   status VARCHAR,
@@ -66,7 +65,5 @@ CREATE TABLE IF NOT EXISTS events(
   updated TIMESTAMP,
   observation VARCHAR,
   color VARCHAR,
-  FOREIGN KEY(serviceId) REFERENCES services(id),
-  FOREIGN KEY(userIdProfessional) REFERENCES users(id),
-  FOREIGN KEY(userIdClient) REFERENCES users(id)
+  FOREIGN KEY(userIdProfessional) REFERENCES users(id)
 );

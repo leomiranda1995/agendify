@@ -34,10 +34,28 @@ class EventRepository {
     return row;
   }
 
+  async findByProfessionalDateStartTime(userIdProfessional, dateEvent, startTime) {
+    const [row] = await db.query(`
+    SELECT *
+      FROM events
+     WHERE userIdProfessional = $1
+       AND dateEvent = $2
+       AND startTime = $3
+    `, [userIdProfessional, dateEvent, startTime]);
+
+    return row;
+  }
+
   async create({
     userIdProfessional,
     userIdClient,
+    clientName,
+    clientPhone,
+    clientEmail,
     serviceId,
+    serviceDescription,
+    servicePrice,
+    eventDescription,
     dateEvent,
     startTime,
     status = 'A',
@@ -45,13 +63,21 @@ class EventRepository {
     color = 'blue',
   }) {
     const [row] = await db.query(`
-    INSERT INTO events (userIdProfessional, userIdClient, serviceId, dateEvent, startTime, status, observation, color)
-    values ($1, $2, $3, $4, $5, $6, $7, $8)
+    INSERT INTO events (userIdProfessional, userIdClient, clientName, clientPhone,
+                        clientEmail, serviceId, serviceDescription, servicePrice,
+                        eventDescription, dateEvent, startTime, status, observation, color)
+    values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         RETURNING *
     `, [
       userIdProfessional,
       userIdClient,
+      clientName,
+      clientPhone,
+      clientEmail,
       serviceId,
+      serviceDescription,
+      servicePrice,
+      eventDescription,
       dateEvent,
       startTime,
       status,
@@ -63,8 +89,12 @@ class EventRepository {
   }
 
   async update(id, {
-    userIdClient,
-    serviceId,
+    clientName,
+    clientPhone,
+    clientEmail,
+    serviceDescription,
+    servicePrice,
+    eventDescription,
     dateEvent,
     startTime,
     status,
@@ -73,19 +103,27 @@ class EventRepository {
   }) {
     const [row] = await db.query(`
       UPDATE events
-         SET userIdClient = $1,
-             serviceId = $2,
-             dateEvent = $3,
-             startTime = $4,
-             status = $5,
-             observation = $6,
-             color = $7,
+         SET clientName = $1,
+             clientPhone = $2,
+             clientEmail = $3,
+             serviceDescription = $4,
+             servicePrice = $5,
+             eventDescription = $6,
+             dateEvent = $7,
+             startTime = $8,
+             status = $9,
+             observation = $10,
+             color = $11,
              updated = timezone('America/Sao_Paulo', CURRENT_TIMESTAMP)
-       WHERE id = $8
+       WHERE id = $12
        RETURNING *
     `, [
-      userIdClient,
-      serviceId,
+      clientName,
+      clientPhone,
+      clientEmail,
+      serviceDescription,
+      servicePrice,
+      eventDescription,
       dateEvent,
       startTime,
       status,
