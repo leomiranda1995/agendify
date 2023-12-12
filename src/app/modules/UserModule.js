@@ -66,7 +66,7 @@ class UserModule {
   }
 
   async updateUser(id, {
-    name, photo, phone, status = 'A', type_user, professional,
+    name, photo, phone, newPassword, status = 'A', type_user, professional,
   }) {
     const userExists = await UserRepository.findById(id);
     if (!userExists) {
@@ -85,9 +85,13 @@ class UserModule {
       }
     }
 
-    const user = await UserRepository.update(id, {
+    let user = await UserRepository.update(id, {
       name, photo, phone, status, type_user,
     });
+
+    if (newPassword) {
+      user = await this.updatePassword(id, { newPassword });
+    }
 
     if (type_user === 'P' && userExists.type_user === 'P') {
       const professionalUpdated = await ProfessionalRepository.update(id, professional);

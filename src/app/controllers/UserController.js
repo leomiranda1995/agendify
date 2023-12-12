@@ -41,8 +41,6 @@ class UserController {
         professional,
       });
 
-      // criar padrão agenda...
-
       response.json(user);
     } catch (e) {
       response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
@@ -56,13 +54,9 @@ class UserController {
         name, photo, phone, newPassword, status, type_user, professional,
       } = request.body;
 
-      let userUpdated = await UserModule.updateUser(id, {
-        name, photo, phone, status, type_user, professional,
+      const userUpdated = await UserModule.updateUser(id, {
+        name, photo, phone, newPassword, status, type_user, professional,
       });
-
-      if (newPassword) {
-        userUpdated = await UserModule.updatePassword(id, { newPassword });
-      }
 
       response.json(userUpdated);
     } catch (e) {
