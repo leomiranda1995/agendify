@@ -99,6 +99,10 @@ class UserModule {
     } else if (userExists.type_user === 'C' && type_user === 'P') {
       const professionalCreated = await ProfessionalRepository.create(id, professional);
       user.professional = professionalCreated;
+
+      const schedule = await ScheduleConfigModule.createDefaultSchedule(user.id);
+
+      user.professional.schedule = schedule;
     }
 
     return user;
