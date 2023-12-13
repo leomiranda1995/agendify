@@ -116,6 +116,27 @@ class EventController {
     }
   }
 
+  async updateEventProfessional(request, response) {
+    try {
+      const { id } = request.params;
+      const {
+        newPrice,
+        newDateEvent,
+        newStartTime,
+      } = request.body;
+
+      const eventUpdated = await EventModule.updateEventProfessional(id, {
+        newPrice,
+        newDateEvent,
+        newStartTime,
+      });
+
+      response.json(eventUpdated);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
+    }
+  }
+
   async delete(request, response) {
     const { id } = request.params;
 

@@ -135,6 +135,29 @@ class EventRepository {
     return row;
   }
 
+  async updateEventProfessional(id, {
+    newPrice,
+    newDateEvent,
+    newStartTime,
+  }) {
+    const [row] = await db.query(`
+      UPDATE events
+         SET servicePrice = $1,
+             dateEvent = $2,
+             startTime = $3,
+             updated = timezone('America/Sao_Paulo', CURRENT_TIMESTAMP)
+       WHERE id = $4
+       RETURNING *
+    `, [
+      newPrice,
+      newDateEvent,
+      newStartTime,
+      id,
+    ]);
+
+    return row;
+  }
+
   async delete(id) {
     const deleteOp = await db.query('DELETE FROM events WHERE id = $1', [id]);
     return deleteOp;

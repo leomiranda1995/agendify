@@ -204,6 +204,38 @@ class EventModule {
     return eventUpdated;
   }
 
+  async updateEventProfessional(id, {
+    newPrice,
+    newDateEvent,
+    newStartTime,
+  }) {
+    const event = await this.listEvent(id);
+    if (!event) {
+      throw new AgendifyError('Event not found!', 404);
+    }
+
+    const eventDateStartTimeExists = await this.listEventByDateStartTime(
+      event.useridprofessional,
+      newDateEvent,
+      newStartTime,
+    );
+
+    if (eventDateStartTimeExists && eventDateStartTimeExists.id !== id) {
+      throw new AgendifyError('Unavailable hours', 401);
+    }
+
+    const eventUpdated = await EventRepository.updateEventProfessional(id, {
+      newPrice,
+      newDateEvent,
+      newStartTime,
+    });
+
+    eventUpdated.created = eventUpdated.created.toLocaleString();
+    eventUpdated.updated = eventUpdated.updated.toLocaleString();
+
+    return eventUpdated;
+  }
+
   async deleteEvent(id) {
     await EventRepository.delete(id);
   }
