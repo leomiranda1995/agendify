@@ -37,15 +37,16 @@ class EventModule {
 
     const events = await EventRepository.findAllClient(user.id);
 
-    events.map((event) => {
+    const adjustedEvents = await Promise.all(events.map(async (event) => {
+      event.professional = await UserModule.listUser(event.useridprofessional);
       event.created = event.created.toLocaleString();
       if (event.updated) {
         event.updated = event.updated.toLocaleString();
       }
       return event;
-    });
+    }));
 
-    return events;
+    return adjustedEvents;
   }
 
   async listEvent(eventId) {
