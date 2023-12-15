@@ -30,6 +30,16 @@ class ProfessionalRepository {
     return row;
   }
 
+  async findAvgQuality(userIdProfessional) {
+    const [row] = await db.query(`
+    SELECT avg(quality) as quality
+     FROM events
+    WHERE useridprofessional = $1
+      AND quality > 0;
+    `, [userIdProfessional]);
+    return row.quality;
+  }
+
   async findByEmail(email) {
     const [row] = await db.query('SELECT * FROM professionals WHERE email = $1', [email]);
     return row;

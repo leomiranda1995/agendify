@@ -88,6 +88,24 @@ class EventRepository {
     return row;
   }
 
+  async qualityEvent({
+    id,
+    quality,
+  }) {
+    const [row] = await db.query(`
+      UPDATE events
+         SET quality = $1,
+             updated = timezone('America/Sao_Paulo', CURRENT_TIMESTAMP)
+       WHERE id = $2
+       RETURNING *
+    `, [
+      quality,
+      id,
+    ]);
+
+    return row;
+  }
+
   async update(id, {
     clientName,
     clientPhone,

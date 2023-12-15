@@ -14,6 +14,19 @@ class UserModule {
     const usersWithProfessional = await Promise.all(
       users.map(async (user) => {
         const professional = await ProfessionalRepository.findByUserId(user.id);
+
+        if (professional) {
+          professional.quality = await ProfessionalRepository.findAvgQuality(user.id);
+
+          if (professional.quality) {
+            professional.quality = parseFloat(professional.quality);
+          }
+
+          if (!professional.quality) {
+            professional.quality = 0;
+          }
+        }
+
         user.professional = professional;
         return user;
       }),
@@ -30,6 +43,17 @@ class UserModule {
     }
 
     const professional = await ProfessionalRepository.findByUserId(user.id);
+    if (professional) {
+      professional.quality = await ProfessionalRepository.findAvgQuality(user.id);
+
+      if (professional.quality) {
+        professional.quality = parseFloat(professional.quality);
+      }
+
+      if (!professional.quality) {
+        professional.quality = 0;
+      }
+    }
     user.professional = professional;
 
     return user;

@@ -153,6 +153,27 @@ class EventModule {
     return event;
   }
 
+  async qualityEvent(
+    id,
+    quality,
+  ) {
+    const event = await this.listEvent(id);
+    if (!event) {
+      throw new AgendifyError('Event not found!', 404);
+    }
+
+    if (quality < 1 || quality > 5) {
+      throw new AgendifyError('allowed value between 1 and 5!', 404);
+    }
+
+    const eventQuality = await EventRepository.qualityEvent({
+      id,
+      quality,
+    });
+
+    return eventQuality;
+  }
+
   async updateEvent(id, {
     clientName,
     clientPhone,

@@ -79,6 +79,24 @@ class EventController {
     }
   }
 
+  async quality(request, response) {
+    try {
+      const {
+        id,
+        quality,
+      } = request.body;
+
+      const event = await EventModule.qualityEvent(
+        id,
+        quality,
+      );
+
+      response.json(event);
+    } catch (e) {
+      response.status(e.statusCode || 500).json({ error: e.message } || 'Internal Server Error!');
+    }
+  }
+
   async update(request, response) {
     try {
       const { id } = request.params;

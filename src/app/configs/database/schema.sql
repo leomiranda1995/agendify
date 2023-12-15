@@ -65,5 +65,6 @@ CREATE TABLE IF NOT EXISTS events(
   updated TIMESTAMP,
   observation VARCHAR,
   color VARCHAR,
+  quality INTEGER DEFAULT 0,
   FOREIGN KEY(userIdProfessional) REFERENCES users(id)
 );
